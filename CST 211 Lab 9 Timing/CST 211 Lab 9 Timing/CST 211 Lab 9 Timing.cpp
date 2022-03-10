@@ -43,7 +43,7 @@ int main()
 	Array<string> arr(300000);					// I know that this code is cold spaghetti, it works though :)
 	List<string> list;
 	BSTree<string> tree;
-	HashTable<string, string> table(300000);
+	HashTable<string, int> table(300000);
 	table.setHash(Hashes::ASCIIHash);
 
 	// Array
@@ -165,7 +165,7 @@ void tableInsertion(C& container)
 			auto insertStart = high_resolution_clock::now();
 			string word = "";
 			myfile >> word;
-			container.Insert(word, word);
+			container.Insert(word, 0);
 			i++;
 			auto insertEnd = high_resolution_clock::now();
 			auto time = duration_cast<nanoseconds>(insertEnd - insertStart).count();
@@ -226,7 +226,7 @@ void listSearch(C& container)
 						"expedient",
 						"recommences",
 						"Pan-German",
-						"Christian-Socialist",
+						"systematic",
 						"Consciousness",
 						"Starnberg",
 						"Socialist",
@@ -263,7 +263,7 @@ void treeSearch(C& container)
 					"expedient",
 					"recommences",
 					"Pan-German",
-					"Christian-Socialist",
+					"systematic",
 					"Consciousness",
 					"Starnberg",
 					"Socialist",
@@ -278,23 +278,51 @@ void treeSearch(C& container)
 	for (auto word : words)
 	{
 		auto searchStart = high_resolution_clock::now();
-		if (container.delete_(word))
-		{
-			auto searchEnd = high_resolution_clock::now();
-			auto time = duration_cast<nanoseconds>(searchEnd - searchStart).count();
-			avgTime = (avgTime + time) / i;
-			i++;
-		}
+		container.delete_(word);
+		auto searchEnd = high_resolution_clock::now();
+		auto time = duration_cast<nanoseconds>(searchEnd - searchStart).count();
+		avgTime = (avgTime + time) / i;
+		i++;
 	}
 
 	auto totalEnd = high_resolution_clock::now();
-	auto totalTime = duration_cast<milliseconds>(totalEnd - totalStart).count();
-	cout << "Total Search Time: " << totalTime << " ms" << endl;
+	auto totalTime = duration_cast<nanoseconds>(totalEnd - totalStart).count();
+	cout << "Total Search Time: " << totalTime << " ns" << endl;
 	cout << "Average Search Time: " << avgTime << " ns" << endl;
 }
 
 template<class C>
 void tableSearch(C& container)
 {
+	string words[12] = { "envisaged",
+				"expedient",
+				"recommences",
+				"Pan-German",
+				"systematic",
+				"Consciousness",
+				"Starnberg",
+				"Socialist",
+				"Versailles",
+				"unsympathic",
+				"parliamentary",
+				"unwillingly" };
+	double avgTime = 0;
+	auto totalStart = high_resolution_clock::now();
+	long i = 1;
+
+	for (auto word : words)
+	{
+		auto searchStart = high_resolution_clock::now();
+		container.Delete(word);
+		auto searchEnd = high_resolution_clock::now();
+		auto time = duration_cast<nanoseconds>(searchEnd - searchStart).count();
+		avgTime = (avgTime + time) / i;
+		i++;
+	}
+
+	auto totalEnd = high_resolution_clock::now();
+	auto totalTime = duration_cast<nanoseconds>(totalEnd - totalStart).count();
+	cout << "Total Search Time: " << totalTime << " ns" << endl;
+	cout << "Average Search Time: " << avgTime << " ns" << endl;
 }
 

@@ -15,7 +15,7 @@ private:
 
 	void Insert(T data, BSTNode<T>* node);
 	BSTNode<T>* Delete(T data, BSTNode<T>* node);
-	BSTNode<T>* Purge(BSTNode<T>* node);	// takes in root for recursion
+	void Purge(BSTNode<T>* node);	// takes in root for recursion
 	BSTNode<T>* findMin(BSTNode<T>* node);
 	BSTNode<T>* findMax(BSTNode<T>* node);
 
@@ -34,7 +34,7 @@ public:
 	BSTree<T>& operator = (BSTree<T>&& rhs) noexcept;
 
 	void insert(T data) { Insert(data, root); }
-	void delete_(T data) { Delete(data, root); }
+	bool delete_(T data) { return Delete(data, root); }
 	int getHeight(BSTNode<T>* node) const;
 	void purgeBST() { Purge(root); }
 	BSTNode<T>* CopyTree(BSTNode<T>* node);
@@ -70,7 +70,8 @@ BSTree<T>::BSTree(BSTree<T>&& bstree) noexcept
 template<typename T>
 BSTree<T>::~BSTree()
 {
-	root = Purge(root);
+	Purge(root);
+	root = nullptr;
 }
 
 template<typename T>
@@ -194,34 +195,16 @@ BSTNode<T>* BSTree<T>::Delete(T data, BSTNode<T>* node)
 }
 
 template<typename T>
-BSTNode<T>* BSTree<T>::Purge(BSTNode<T>* node)
+void BSTree<T>::Purge(BSTNode<T>* node)
 {
-	try {
-		if (isEmpty())
-			throw Exception("\nPurging empty Tree...");
-	}
-	catch (Exception& e)
+	if (node != nullptr)
 	{
-		cout << e.getMessage();
-		return nullptr;
+		Purge(node->left);
+		Purge(node->right);
 	}
-
-	while (root->left != nullptr)
-	{
-		BSTNode<T>* temp = findMin(node);
-		delete_(temp->m_data);
-	}
-	while (root->right != nullptr)
-	{
-		BSTNode<T>* temp = findMax(node);
-		delete_(temp->m_data);
-
-	}
+	delete node;
 
 	root = nullptr;
-	delete root;
-
-	return nullptr;
 }
 
 template<typename T>
